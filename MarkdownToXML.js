@@ -1,0 +1,4 @@
+var Lexer = function(wordLine) {
+
+
+}
