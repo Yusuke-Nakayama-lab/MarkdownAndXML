@@ -1,5 +1,5 @@
 
-test = "#Goal G_1 1\nGoal_Explanation\n#Context C_7 7\nContext_Explanation\n\nTitle:Test\nSecond content";
+test = "#Goal G_1 1\nGoal_Explanation\n##Context C_7 7\nContext_Explanation\n\nTitle:Test\nSecond content";
 
 var trim = function(str){
 	return str.replace(/(^\s+)|(\s+$)/g, "");
@@ -34,22 +34,40 @@ var parseAllContents = function(text){
 	return contents;
 }
 
-var parseMarkdown = function(markdownText){
+var findParent = function(title, depth, text){
+	if(title === "Goal") {
+		switch (depth){
+			case 1:return null; break;
+			case 2:break;	
+		}
+	}
+}
 
-	var block = markdownText.split(/^#+\s*/m);
+var findChildren = function(title, depth){
+	
+}
+
+var parseMarkdown = function(markdownText){
+	
+	//var block = markdownText.split(/^#+\s*/m);
+	var block = markdownText
+		.replace(/^(#+)\s*/mg, "<!--split-->$1 ")
+		.split("<!--split-->");
 	
 	for(var i = 1 ; i < block.length ; i++ ) {
 		var node = {};
 		var lines = splitByLines(block[i]);
 		var parts = trim(lines.shift()).split(" ");
-		node.title    = parts[0];
-		node.name     = parts[1];
-		node.id       = parts[2];
+		node.depth    = parts[0].length;
+		node.title    = parts[1];
+		node.name     = parts[2];
+		node.id       = parts[3];
 		node.contents = parseAllContents(lines.join("\n"));
-		node.parent   = null;
+		node.parent   = null;//findParent(lines, depth, markdownText);
 		node.children = [];
 		console.log(node);
 	}
+
 }
 
 parseMarkdown(test);
